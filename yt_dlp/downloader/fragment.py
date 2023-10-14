@@ -344,7 +344,13 @@ class FragmentFD(FileDownloader):
 
         def _get_key(url):
             if url not in _key_cache:
-                _key_cache[url] = self.ydl.urlopen(self._prepare_url(info_dict, url)).read()
+                if "https://hls-auth.cloud.stream.co.jp" in url:
+                    _key_cache[url] = 0x5C6F5C036737D8EFD7A26FD7B6910835.to_bytes(16, "big")
+                elif "https://www.zan-live.com" in url:
+                    _key_cache[url] = 0x2F48116DF9B9F18564D9FA0A11B4B5F6.to_bytes(16, "big")
+                else:
+                    _key_cache[url] = self.ydl.urlopen(self._prepare_url(info_dict, url)).read()
+                #print(_key_cache[url].decode("utf-8"))
             return _key_cache[url]
 
         def decrypt_fragment(fragment, frag_content):
